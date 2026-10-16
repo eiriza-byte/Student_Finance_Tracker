@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Finance Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="styles/style.css">
+    <script src="scripts/main.js" type="module"></script>
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+        <img src="assets/vault-solid.png" alt="" width="44" height="44">
+        <span class="brand">Student Finance Tracker</span>
+    </header>
+    <nav aria-label="Main">
+        <ul>
+            <li>
+                <a href="#dashboard" class="nav-link" data-tab="dashboard">
+                    <i class="fa-solid fa-house" aria-hidden="true"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#records" class="nav-link" data-tab="records">
+                   <i class="fa-solid fa-arrow-right-arrow-left" aria-hidden="true"></i>
+                   <span>Records</span>
+                </a>
+            </li>
+            <li>   
+                <a href="#form-selection" class="nav-link" data-tab="form-selection">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    <span>Add</span>
+                </a>
+            </li>
+            <li>    
+                <a href="#about" class="nav-link" data-tab="about">
+                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="#settings" class="nav-link" data-tab="settings">
+                  <i class="fa-solid fa-gear" aria-hidden="true"></i>
+                  <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <main id="main" class="main-content" tabindex="-1">
+        <section id="dashboard" class="tab-content" aria-labelledby="dash-h">
+            <h1 id="dash-h">Dashboard</h1>
+            <div class="ledger">
+                <p class="ledger-label">Total spent</p>      
+                <p class="ledger-value" id="total-spent">$0.00</p>
+            </div>
+            <div class="stat-row">
+                <div class="stat">
+                    <p class="stat-label">Transactions</p>
+                    <p class="stat-value" id="stat-count">0</p>
+                </div>
+                <div class="stat">
+                    <p class="stat-label">Top category</p>
+                    <p class="stat-value" id="stat-top">None yet</p>
+                </div>
+            </div>
+            <div class="stat-row converted-row" id="converted-totals"></div>
+        </section>
+        <section id="form-selection" class="tab-content" aria-labelledby="form-h">
+            <h2 id="form-h">Add expense</h2> 
+            <form id="expenseForm" novalidate>
+                <div class="field wide">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" name="description" autocomplete="off" aria-describedby="description-err" required>
+                    <p class="field-error" id="description-err"></p>
+                </div>
+                <div class="field">
+                    <label for="amount">Amount (USD)</label>
+                    <input type="text" id="amount" name="amount" inputmode="decimal" placeholder="0.00" aria-describedby="amount-err" required>
+                    <p class="field-error" id="amount-err"></p>      
+                </div>      
+                <div class="field">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" aria-describedby="category-err" required>
+                        <option value="" disabled selected>Choose a category</option>
+                        <option>Food</option>
+                        <option>Books</option>
+                        <option>Transport</option>
+                        <option>Entertainment</option>
+                        <option>Fees</option>
+                        <option>Other</option>
+                    </select>
+                    <p class="field-error" id="category-err"></p>
+                                                                                                                                              
+                </div>      
+                <div class="field">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date" aria-describedby="date-err" required>
+                    <p class="field-error" id="date-err"></p>
+                </div>      
+                    <button type="submit" class="btn-primary">Save expense</button>
+            </form>
+            <p id="form-message" class="message" role="status"></p>
+        </section>
+        <section id="records" class="tab-content" aria-labelledby="rec-h">
+            <h2 id="rec-h">Records</h2> 
+            <div class="toolbar">
+                <div class="field grow">
+                    <label for="search">Search (regex)</label>
+                    <input type="text" id="search" autocomplete="off" spellcheck="false"
+                         placeholder="e.g. coffee|tea or \.\d{2}\b" aria-describedby="search-status">
+                </div>
+                <label class="check" for="search-case">
+                    <input type="checkbox" id="search-case" checked>
+                    Ignore case
+                </label>
+                <div class="field">
+                    <label for="sort">Sort by</label>
+                    <select id="sort">
+                        <option value="date-desc">Date, newest first</option>
+                        <option value="date-asc">Date, oldest first</option>
+                        <option value="desc-asc">Description, A to Z</option>
+                        <option value="desc-desc">Description, Z TO A</option>
+                        <option value="amount-asc">Amount, low to high</option>
+                        <option value="amount-desc">Amount, high to low</option>
+                    </select>
+                </div>
+            </div>
+            <p id="search-status" class="message" role="status"></p>
+            <div class="table-wrap">
+                <table class="transaction-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Category</th>
+                            <th scope="col" class="num">Amount</th>
+                            <th scope="col"><span class="sr-only">Actions</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenseList"></tbody>
+                </table>
+            </div> 
+        </section>
+        <section id="about" class="tab-content" aria-labelledby="about-h">
+            <h2 id="about-h">About</h2> 
+            <h3>Purpose</h3>   
+            <p>
+                A simple way to see where your money goes during your studies. Log what you spend, sort it into categories, and watch your totals.
+            </p>
+            <h3>Contact</h3>
+            <ul class="contact-list">
+                <li>
+                    <i class="fa-brands fa-github" aria-hidden="true"></i>
+                    <a href="https://github.com/eiriza-byte" target="_blank" rel="noopener noreferrer">
+                        github.com/eiriza-byte 
+                        <span class="sr-only">(opens in a new tab)</span>
+                    </a>
+                </li>
+                <li>
+                    <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                    <a href="https://github.com/eiriza-byte/Student_Finance_Tracker" target="_blank" rel="noopener noreferrer">
+                        Source code on GitHub
+                        <span class="sr-only">(opens in a new tab)</span>
+                    </a>
+                </li>
+            </ul>
+            <p class="about-credit">Built by Eunice</p>  
+        </section>
+        <section id="settings" class="tab-content" aria-labelledby="set-h">
+            <h2 id="set-h">Settings</h2>  
+            <p id="settings-message" class="message" role="status"></p> 
+            <h3>Currency and spending cap</h3>
+            <form id="settingsForm" novalidate>
+                <p class="form-hint">
+                    Your base currency is USD. A rate says how many units of a currency equal 1 USD.
+                    Enter the rates yourself and update them whenever you like.
+                </p>
+                <div class="field">
+                    <label for="currency-1">Second currency</label>
+                    <select id="currency-1" name="currency-1">
+                        <option>EUR</option><option>GBP</option><option>RWF</option><option>KES</option>
+                        <option>NGN</option><option>JPY</option><option>CAD</option><option>INR</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="rate-1">Rate (1 USD =)</label>
+                    <input type="text" id="rate-1" inputmode="decimal" aria-describedby="rate-1-err">
+                    <p class="field-error" id="rate-1-err"></p>
+                </div>
+                <div class="field">
+                    <label for="currency-2">Third currency</label>
+                    <select id="currency-2" name="currency-2" aria-descibedby="currency-2-err">
+                        <option>EUR</option><option>GBP</option><option>RWF</option><option>KES</option>
+                        <option>NGN</option><option>JPY</option><option>CAD</option><option>INR</option>
+                    </select>
+                    <p class="field-error" id="currency-2-err"></p>
+                </div>
+                <div class="field">
+                    <label for="rate-2">Rate (1 USD =)</label>
+                    <input type="text" id="rate-2" inputmode="decimal" aria-describedby="rate-2-err">
+                </div>
+                <div class="field wide">
+                    <label for="cap">Spending cap in USD (optional)</label>
+                    <input type="text" id="cap" inputmode="decimal" placeholder="e.g. 300" aria-describedby="cap-err">
+                    <p class="field-error" id="cap-err"></p>
+                </div>
+                <button type="submit" class="btn-primary">Save settings</button>
+            </form>
+            <h3>Categories</h3>
+            <ul id="category-list" class="category-list"></ul>
+            <form id="categoryForm" novalidate>
+                <div class="field wide">
+                    <label for="new-category">New category</label>
+                    <input type="text" id="new-category" autocomplete="off" aria-describedby="new-category-err">
+                    <p class="field-error" id="new-category-err"></p>
+                </div>
+                <button type="submit" class="btn-primary">Add category</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
+                                                                                                                                                                                                                                                
+                                                                                                                                           
+                         

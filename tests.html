@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regex Tests</title>
+    <style>
+        body { font-family: sans-serif; padding:2rem; background: #f9f9f9;}
+        .pass{ color: #1a7f4b; font-weight: 700;}
+        .fail{ color: #b42318; font-weight: 700;}
+        ul{ line-height: 1.7;}
+    </style>
+</head>
+<body>
+    <h1>Regex Tests</h1>
+    <ul id="results"></ul>
+    <script type="module">
+        import {
+            validateDescription,
+            validateAmount,
+            validateDate,
+            validateCategory,
+            validateRate,
+            hasDuplicateWords,
+            normalizeDescription
+        } from './scripts/validators.js'
+        const list = document.getElementById('results');
+        const t = (name, fn) => {
+            const li = document.createElement('li');
+            try {
+                const ok = fn() === true;
+                li.innerHTML = `${name}: <span class="${ok ? 'pass' : 'fail'}">${ok ? 'PASSED' : 'FAILED'}</span>`;
+                console.assert(ok, name);
+            } catch (e) {
+                li.innerHTML = `${name}: <span class="fail">ERROR (${e.message})</span>`;
+            }
+            list.appendChild(li);
+        };
+        t('Description: valid', ()  => validateDescription('Lunch at cafeteria'));
+        t('Description: leading space rejected', () => !validateDescription(' Lunch'));
+        t('Description: double spaces collapse', () => normalizeDescription('Bus  pass') === 'Bus pass');
+        t('Amount: 12.50 valid', () => validateAmount('12.50'));
+        t('Amount: 0 valid', () => validateAmount('0'));
+        t('Amount: 12.5a rejected', () => !validateAmount('12.5a'));
+        t('Amount: 007 rejected', () => !validateAmount('007'));
+        t('Amout: 1.234 rejected', () => !validateAmount('1.234'));
+        t('Date valid', () => validateDate("2025-09-29"));
+        t('Date: wrong order rejected', () => !validateDate("29-09-2025"));
+        t('Date: month 13 rejected', () => !validateDate('2025-13-01'));
+        t('Category: "Food" valid', () => validateCategory('Food'));
+        t('Category: "Fast-food" valid', () => validateCategory('Fast-food'));
+        t('Category: digits rejected', () => !validateCategory('Food2'));
+        t('Duplicate words: found', () => hasDuplicateWords('Coffee coffee'));
+        t('Duplicate words: not found', () => !hasDuplicateWords('Morning coffee'));
+        t('Rate: 0.92 valid', () => validateRate('0.92'));
+        t('Rate: 0 rejected (must be above zero)', () => !validateRate('0'));
+        t('Rate: 7 decimals rejected', () => !validateRate('0.1234567'));
+    </script>
+</body>
+</html>
