@@ -2,7 +2,7 @@
 A responsive, accessible expense tracker for students, built with vanilla HTML, CSS and JavaScript (no frameworks).
 **Theme:** Student Finance Tracker
 **Live site:** https://eiriza-byte.github.io/Student_Finance_Tracker/
-**Demo video (unlisted):** YOUR_VIDEO_LINK
+**Demo video (unlisted):** https://www.youtube.com/watch?v=9X5wYP8E9vU
 **Contact:** [GitHub](https://github.com/eiriza-byte) | e.iriza@alustudent.com
 ## Features
 - **Dashboard:** total spent, number of transactions, top category, totals in two other currencies, a spending cap with remaining or overage, and a last-7-days bar chart.
