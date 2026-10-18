@@ -207,7 +207,7 @@ export const renderCap = ({state, amount, percent}) => {
     const assertive = document.getElementById("cap-live-assertive");
     if (!box) return;
     let message;
-    if (state === 'over') messsage = `Over your cap by ${formatMoney(amount)}.`;
+    if (state === 'over') message = `Over your cap by ${formatMoney(amount)}.`;
     else if (state === 'under') message = `${formatMoney(amount)} left under your cap.`;
     else message = "No cap set. Add one in Settings.";
     text.textContent = message;
@@ -216,7 +216,7 @@ export const renderCap = ({state, amount, percent}) => {
     if (message !== lastCapMessage) {
         lastCapMessage = message;
         polite.textContent = '';
-        assertive.textCintent = '';
+        assertive.textContent = '';
         if (state === 'over') assertive.textContent = message;
         else if (state === 'under') polite.textContent = message;
     }
