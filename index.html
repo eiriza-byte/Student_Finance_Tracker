@@ -69,6 +69,15 @@
                 </div>
             </div>
             <div class="stat-row converted-row" id="converted-totals"></div>
+            <div class="cap-box" id="cap-box" data-state="none">
+                <p class="stat-label">Spending cap</p>
+                <p class="stat-value" id="cap-text">No cap set. Add one in Settings.</p>
+                <div class="cap-bar"><div class="cap-fill" id="cap-fill"></div></div>
+            </div>
+            <p id="cap-live-polite" class="sr-only" role="status" aria-live="polite"></p>
+            <p id="cap-live-assertive" class="sr-only" role="alert" aria-live="assertive"></p>
+            <h3>Last 7 days</h3>
+            <ul class="trend" id="trend"></ul>
         </section>
         <section id="form-selection" class="tab-content" aria-labelledby="form-h">
             <h2 id="form-h">Add expense</h2> 
@@ -124,7 +133,7 @@
                         <option value="date-desc">Date, newest first</option>
                         <option value="date-asc">Date, oldest first</option>
                         <option value="desc-asc">Description, A to Z</option>
-                        <option value="desc-desc">Description, Z TO A</option>
+                        <option value="desc-desc">Description, Z to A</option>
                         <option value="amount-asc">Amount, low to high</option>
                         <option value="amount-desc">Amount, high to low</option>
                     </select>
@@ -162,11 +171,15 @@
                     </a>
                 </li>
                 <li>
-                    <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                    <i class="fa-solid fa-code-branch" aria-hidden="true"></i>
                     <a href="https://github.com/eiriza-byte/Student_Finance_Tracker" target="_blank" rel="noopener noreferrer">
                         Source code on GitHub
                         <span class="sr-only">(opens in a new tab)</span>
                     </a>
+                </li>
+                <li>
+                    <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                    <a href="mailto:e.iriza@alustudent.com">e.iriza@alustudent.com</a>
                 </li>
             </ul>
             <p class="about-credit">Built by Eunice</p>  
@@ -194,7 +207,7 @@
                 </div>
                 <div class="field">
                     <label for="currency-2">Third currency</label>
-                    <select id="currency-2" name="currency-2" aria-descibedby="currency-2-err">
+                    <select id="currency-2" name="currency-2" aria-describedby="currency-2-err">
                         <option>EUR</option><option>GBP</option><option>RWF</option><option>KES</option>
                         <option>NGN</option><option>JPY</option><option>CAD</option><option>INR</option>
                     </select>
@@ -203,6 +216,7 @@
                 <div class="field">
                     <label for="rate-2">Rate (1 USD =)</label>
                     <input type="text" id="rate-2" inputmode="decimal" aria-describedby="rate-2-err">
+                    <p class="field-error" id="rate-2-err"></p>
                 </div>
                 <div class="field wide">
                     <label for="cap">Spending cap in USD (optional)</label>
@@ -221,8 +235,20 @@
                 </div>
                 <button type="submit" class="btn-primary">Add category</button>
             </form>
+            <h3>Your data</h3>
+            <div class="data-box">
+                <button type="button" id="export-btn" class="btn-primary">Export records (JSON)</button>
+                <div class="field">
+                    <label for="import-file">Import records (JSON)</label>
+                    <input type="file" id="import-file" accept="application/json,.json">
+                </div>
+            </div>
+            <p id="data-message" class="message" role="status"></p>
         </section>
     </main>
+    <footer class="site-footer">
+        <p>Built by Eunice. <a href="https://github.com/eiriza-byte/Student_Finance_Tracker">Source on Github</a></p>
+    </footer>
 </body>
 </html>
                                                                                                                                                                                                                                                 

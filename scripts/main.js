@@ -6,7 +6,7 @@ import {
     validateCategory,
     hasDuplicateWords
 } from './validators.js';
-import { getTransactions, addTransaction, deleteTransaction, getSettings } from './state.js';
+import { getTransactions, addTransaction, deleteTransaction, getSettings, updateTransaction } from './state.js';
 import { initSettings} from './settings.js';
 import {compileRegex, matchesRecord, sortTransactions} from './search.js';
 import {
@@ -17,8 +17,12 @@ import {
     showSearchStatus,
     formatMoney,
     setFieldError,
-    initTabs
+    initTabs,
+    renderCap,
+    renderTrend
 } from './ui.js';
+import {initData} from './data.js';
+import {getLast7Days, getCapStatus} from './stats.js';
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('expenseForm');
     const FIELDS = ['description', 'amount', 'category', 'date']; 
@@ -28,6 +32,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const caseCheckbox = document.getElementById('search-case');
     const sortSelect = document.getElementById('sort');
     dateInput.value = today(); 
+    let editingId = null;
+    const focusEditButton = (id) => {
+        const btn = [...document.querySelectorAll('.btn-edit')].find(b => b.dataset.id === id);
+        if (btn) btn.focus();
+    };
+    const validateEdit = (v) => {
+        const errors = {};
+        if (!validateDescription(v.description)) {
+            errors.description = 'Enter a description with no leading or trailing spaces.';
+        } else if (hasDuplicateWords(v.description)) {
+            errors.description = 'Remove the repeated word.';
+        }
+        if (!validateAmount(v.amount)) errors.amount = 'Amount must be like 12 or 12.50.';
+        if (!validateCategory(v.category)) errors.category = 'Choose a category.';
+        if (!validateDate(v.date)) errors.date = 'Use the format YYYY-MM-DD.';
+        return errors;
+    }
     const updateView = () => {
         const all = getTransactions();
         const {regex, error} = compileRegex(searchInput.value, caseCheckbox.checked ? 'i' : '');
@@ -36,12 +57,50 @@ document.addEventListener('DOMContentLoaded', () => {
            : all;
         const visible = sortTransactions(filtered, sortSelect.value);
         renderTransactionTable(visible, (id) => {
+            if (editingId === id) editingId = null;
             deleteTransaction(id);
             updateView();
-        }, regex);
+        }, regex, {
+            editingId,
+            categories: getSettings().categories,
+            onEdit: (id) => {
+                editingId = id;
+                updateView();
+                document.getElementById(`edit-description`)?.focus();
+            },
+            onCancel: () => {
+                const id = editingId;
+                editingId = null;
+                updateView();
+                focusEditButton(id);
+            },
+            onSave: (id, values) => {
+                const clean = {
+                    description: normalizeDescription(values.description),
+                    amount: values.amount.trim(),
+                    category: values.category.trim(),
+                    date: values.date.trim()
+                };
+                const errors = validateEdit(clean);
+                if (Object.keys(errors).length > 0) return errors;
+                updateTransaction(id, {
+                    description: clean.description,
+                    amount: parseFloat(clean.amount),
+                    category: clean.category,
+                    date: clean.date
+                });
+                editingId = null;
+                updateView();
+                showSearchStatus('Record updated.');
+                focusEditButton(id);
+                return null;
+            }
+        });
         renderStats(all);
         const total = all.reduce((sum, t) => sum + Number(t.amount), 0);
         renderConverted(total, getSettings().currencies);
+        renderTrend(getLast7Days(all));
+        renderCap(getCapStatus(total, getSettings().cap));
         if (error) {
             showSearchStatus(`Invalid pattern: ${error}`, true);
         } else if (regex) {
@@ -54,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     caseCheckbox.addEventListener('change', updateView);
     sortSelect.addEventListener('change', updateView);
     initSettings(updateView);
+    initData(updateView);
     initTabs(); 
     updateView();
     form.addEventListener('submit', (e) => {

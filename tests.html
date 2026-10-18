@@ -22,8 +22,11 @@
             validateCategory,
             validateRate,
             hasDuplicateWords,
-            normalizeDescription
+            normalizeDescription,
+            validateImport
         } from './scripts/validators.js'
+        import {sortTransactions} from './scripts/search.js';
+        import {getCapStatus, getLast7Days} from './scripts/stats.js';
         const list = document.getElementById('results');
         const t = (name, fn) => {
             const li = document.createElement('li');
@@ -55,6 +58,16 @@
         t('Rate: 0.92 valid', () => validateRate('0.92'));
         t('Rate: 0 rejected (must be above zero)', () => !validateRate('0'));
         t('Rate: 7 decimals rejected', () => !validateRate('0.1234567'));
+        const goodRecord = { id: 'a', description: 'Bus pass', amount: 45, category:'Transport', date: '2025-09-20', createdAt: '2025-09-20T08:00:00.000Z', updatedAt: '2025-09-20T08:00:00.000Z'};
+        t('Import: valid file passes', () => validateImport([goodRecord]).ok);
+        t('Import: not an array fails', () => !validateImport({}).ok);
+        t('Import: duplicate ids fail', () => !validateImport([goodRecord, goodRecord]).ok);
+        t('Import: impossible date fails (Feb 30)', () => !validateImport([{...goodRecord, date: '2025-02-30'}]).ok);
+        t('Import: amount as text fails', () => !validateImport([{...goodRecord, amount: '45'}]).ok);
+        t('Sort: date oldest first', () => sortTransactions([{date:'2025-02-01'},{date:'2025-01-01'}], 'date-asc')[0].date === '2025-01-01');
+        t('Sort: description A to Z works', () => sortTransactions([{description:'b'},{description:'a'}], 'desc-asc')[0].description === 'a');
+        t('Cap: over the cap', () => getCapStatus(350, 300).state === 'over');
+        t('Trend: returns 7 days', () => getLast7Days([]).length === 7);
     </script>
 </body>
 </html>

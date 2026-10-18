@@ -112,7 +112,7 @@ export const initSettings = (onChange) => {
     fillForm();
     renderCategories();
 };
-                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                        
                                                                                                                                                                                                                    
                                                                                 
                                                     

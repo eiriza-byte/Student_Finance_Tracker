@@ -35,8 +35,8 @@ export const matchesRecord = (t, regex, formatAmount) => {
 };
 const sorters = {
     'date-desc' : (a, b) => b.date.localeCompare(a.date),
-    'date-desc' : (a, b) => a.date.localeCompare(b.date),
-    'desc-asc' : (a, b) => a.description.localeCompare(b.description, undefined, { sensitivity: 'base '}),
+    'date-asc' : (a, b) => a.date.localeCompare(b.date),
+    'desc-asc' : (a, b) => a.description.localeCompare(b.description, undefined, { sensitivity: 'base'}),
     'desc-desc' : (a, b) => b.description.localeCompare(a.description, undefined, { sensitivity: 'base'}),
     'amount-asc' : (a, b) => Number(a.amount) - Number(b.amount),
     'amount-desc' : (a, b) => Number(b.amount) - Number(a.amount)
